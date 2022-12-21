@@ -1,4 +1,4 @@
 [core]
     autostage = true
 ['remote "origin"']
-    url = https://dagshub.com/tiksharsh/DVC-ML-Experiment.dvc
+    url = https://dagshub.com/tiksharsh/dvc-ml-exp.dvc
