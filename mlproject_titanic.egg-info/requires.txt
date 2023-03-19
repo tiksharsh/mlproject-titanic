@@ -1,0 +1,6 @@
+pandas
+numpy
+joblib
+dagshub
+sklearn
+scikit-learn

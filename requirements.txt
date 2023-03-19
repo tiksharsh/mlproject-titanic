@@ -1,0 +1,10 @@
+# local packages
+-e .
+
+#
+pandas
+numpy
+joblib
+dagshub
+sklearn
+scikit-learn
