@@ -4,6 +4,9 @@ import pandas as pd
 import numpy as np
 from dataclasses import dataclass
 
+# from data_transformation import DataTransformation
+# from data_transformation import feature_engineering, to_category
+
 import joblib
 import dagshub
 
@@ -38,9 +41,6 @@ class DataIngestionConfig:
     sub_df_path: str = os.path.join('Data',"sample_submission.csv")
     logging.info(f"Inside DataIngestionConfig {train_df_path}")
     logging.info('-'*80)
-    # train_df_path = "/Users/Wolverine/Desktop/Machine_Learning/DAGsHub/DagsHub-TitanicDataSet/Data/train.csv"
-    # test_df_path = "/Users/Wolverine/Desktop/Machine_Learning/DAGsHub/DagsHub-TitanicDataSet/Data/test.csv"
-    # sub_df_path = "/Users/Wolverine/Desktop/Machine_Learning/DAGsHub/DagsHub-TitanicDataSet/Data/sample_submission.csv"
 
 class DataIngestion:
     def __init__(self):
@@ -54,14 +54,7 @@ class DataIngestion:
         # logging.info(f"Inside feature_engineering")
         # logging.info('-'*80)
         return df
-
-    def fit_model(self,train_X, train_y, random_state=42):
-        clf = SGDClassifier(loss="modified_huber", random_state=random_state)
-        clf.fit(train_X, train_y)
-        # logging.info(f"Inside fit_model")
-        # logging.info('-'*80)
-        return clf
-
+    
     def to_category(self,train_df, test_df):
         cat = ["Sex", "Cabin", "Embarked"]
         for col in cat:
@@ -71,6 +64,13 @@ class DataIngestion:
             # logging.info(f"Inside to_category")
             # logging.info('-'*80)
         return train_df, test_df
+
+    def fit_model(self,train_X, train_y, random_state=42):
+        clf = SGDClassifier(loss="modified_huber", random_state=random_state)
+        clf.fit(train_X, train_y)
+        logging.info(f"Inside fit_model")
+        # logging.info('-'*80)
+        return clf
 
     def eval_model(self,clf, X, y):
         y_proba = clf.predict_proba(X)[:, 1]
@@ -104,6 +104,7 @@ class DataIngestion:
         X = self.feature_engineering(df_train).drop(self.ingestion_config.drop_cols + [self.ingestion_config.obj_col], axis=1)
         
         test_df = self.feature_engineering(df_test).drop(self.ingestion_config.drop_cols, axis=1)
+        
         X, test_df = self.to_category(X, test_df)
         X.fillna(0, inplace=True)
         test_df.fillna(0, inplace=True)
@@ -112,10 +113,12 @@ class DataIngestion:
             
             try:
                 logging.info("Training model...")
-                X_train, X_test, y_train, y_test = train_test_split(
-                    X, y, test_size=0.2, random_state=42, stratify=y
-                )
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+                logging.info("call fit model")
+                print(X_train.head())
+                print(y_train.head())
                 model = self.fit_model(X_train, y_train)
+                logging.info(f"Model: {model}")
                 
                 logging.info("Saving trained model...")
                 joblib.dump(model, "Model/model.joblib")
@@ -143,4 +146,5 @@ class DataIngestion:
 if __name__ == "__main__":
     obj = DataIngestion()
     obj.model_run()
+
     
