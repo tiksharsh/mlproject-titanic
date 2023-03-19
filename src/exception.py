@@ -24,11 +24,11 @@ class CustomException(Exception):
 
 # Below code is created for Exception file testing purpose 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    try:
-        a = 1 / 0
+#     try:
+#         a = 1 / 0
 
-    except Exception as e:
-        logging.info("Exception File-- Divide By Zero Error")
-        raise CustomException(e, sys)
+#     except Exception as e:
+#         logging.info("Exception File-- Divide By Zero Error")
+#         raise CustomException(e, sys)
